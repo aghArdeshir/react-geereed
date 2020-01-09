@@ -1,9 +1,9 @@
 import React from 'react';
 
-function App() {
+function ReactGeereed() {
   return (
     <div></div>
   );
 }
 
-export default App;
+export default ReactGeereed;
