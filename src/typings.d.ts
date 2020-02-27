@@ -11,3 +11,9 @@ export interface IReactGeereedProps {
     columns: IGeereedColumn[];
     items: IGeereedItem[];
 }
+
+export interface IUseGeereedItemsOptions {
+    sortKey?: string;
+    sortType?: string;
+    searchTerm?: string;
+}

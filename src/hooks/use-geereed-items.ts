@@ -1,9 +1,17 @@
-import { IGeereedItem } from "../typings";
+import { IGeereedItem, IUseGeereedItemsOptions } from "../typings";
 import { SORT_TYPES } from "./use-geereed-sort";
 
-export function useGeereedItems(items: IGeereedItem[], options: { sortKey?: string, sortType?: string } = {}) {
-    const { sortKey, sortType } = options
+export function useGeereedItems(items: IGeereedItem[], options: IUseGeereedItemsOptions = {}) {
+    const { sortKey, sortType, searchTerm } = options
     let result = [...items];
+
+    if (searchTerm) {
+        result = result.filter(item => {
+            return Object.keys(item).some(key => {
+                return item[key].toString().toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+            })
+        })
+    }
 
     if (sortKey) {
         result.sort((item1: IGeereedItem, item2: IGeereedItem) => {

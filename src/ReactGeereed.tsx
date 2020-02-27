@@ -2,13 +2,16 @@ import React from 'react';
 import { IReactGeereedProps, IGeereedColumn, IGeereedItem } from './typings';
 import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items'
+import { useGeereedSearch } from './hooks/use-geereed-search';
 
 function ReactGeereed(props: IReactGeereedProps) {
   const { columns, items } = props;
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
-  const _items = useGeereedItems(items, { sortKey, sortType });
+  const [searchTerm, setSearchTerm] = useGeereedSearch();
+  const _items = useGeereedItems(items, { sortKey, sortType, searchTerm });
 
-  return (
+  return (<>
+    <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search..." autoFocus />
     <table className="react-geereed">
       <thead>
         <tr>
@@ -34,7 +37,7 @@ function ReactGeereed(props: IReactGeereedProps) {
           {columns.map((column: IGeereedColumn) => <td key={column.key}>{item[column.key]}</td>)}
         </tr>)}
       </tbody>
-    </table>
+    </table></>
   );
 }
 
