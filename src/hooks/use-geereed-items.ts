@@ -2,7 +2,7 @@ import { IGeereedItem, IUseGeereedItemsOptions } from "../typings";
 import { SORT_TYPES } from "./use-geereed-sort";
 
 export function useGeereedItems(items: IGeereedItem[], options: IUseGeereedItemsOptions = {}) {
-    const { sortKey, sortType, searchTerm } = options
+    const { sortKey, sortType, searchTerm, columnFilters } = options
     let result = [...items];
 
     if (searchTerm) {
@@ -12,6 +12,15 @@ export function useGeereedItems(items: IGeereedItem[], options: IUseGeereedItems
             })
         })
     }
+
+    Object.keys(columnFilters || {}).forEach(columnKey => {
+        const columnFilterValue = (columnFilters || {})[columnKey]
+        if (columnFilterValue) {
+            result = result.filter(item => {
+                return (item[columnKey] === columnFilterValue) || (item[columnKey].toString().toLowerCase().indexOf(columnFilterValue.toString().toLowerCase()) > -1)
+            })
+        }
+    });
 
     if (sortKey) {
         result.sort((item1: IGeereedItem, item2: IGeereedItem) => {

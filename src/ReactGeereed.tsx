@@ -11,7 +11,7 @@ function ReactGeereed(props: IReactGeereedProps) {
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
   const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
-  const _items = useGeereedItems(items, { sortKey, sortType, searchTerm });
+  const _items = useGeereedItems(items, { sortKey, sortType, searchTerm, columnFilters });
 
   return (<>
     <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search..." autoFocus />

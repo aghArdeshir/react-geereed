@@ -16,6 +16,7 @@ export interface IUseGeereedItemsOptions {
     sortKey?: string;
     sortType?: string;
     searchTerm?: string;
+    columnFilters?: IGeereedFilterState;
 }
 
 export type IUseGeereedSort = [string, SORT_TYPES.ASC | SORT_TYPES.DES, (columnKey: string) => void];
