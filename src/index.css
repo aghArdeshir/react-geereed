@@ -13,8 +13,13 @@ code {
 
 .react-geereed {
   text-align: left;
+  width: 100%;
 }
 
 .react-geereed th, .react-geereed td {
   padding: 5px 15px;
+}
+
+.react-geereed th {
+  cursor: pointer;
 }
