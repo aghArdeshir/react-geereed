@@ -21,4 +21,17 @@ export interface IUseGeereedItemsOptions {
 export type IUseGeereedSort = [string, SORT_TYPES.ASC | SORT_TYPES.DES, (columnKey: string) => void];
 export type IUseGeereedSearch = [string, (searchTerm: string) => void];
 
-export interface IGeereedHeaderCell { sortKey: string; sortType: string; column: IGeereedColumn; onSortCallback: IUseGeereedSort[2] }
+export interface IGeereedHeaderCell {
+    sortKey: string; sortType: string; column: IGeereedColumn; onSortCallback: IUseGeereedSort[2];
+    columnFilter: string;
+    dispatchColumnFilters: any;
+}
+
+export interface IGeereedFilterState {
+    [coluumnKey: string]: string;
+}
+
+export interface IGeereedFilterAction {
+    columnKey: string;
+    value: string;
+}
