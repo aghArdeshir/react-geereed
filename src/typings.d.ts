@@ -18,4 +18,7 @@ export interface IUseGeereedItemsOptions {
     searchTerm?: string;
 }
 
-export interface IGeereedHeaderCell { sortKey: string; sortType: string; column: IGeereedColumn; onSortCallback: (something: string) => void }
+export type IUseGeereedSort = [string, SORT_TYPES.ASC | SORT_TYPES.DES, (columnKey: string) => void];
+export type IUseGeereedSearch = [string, (searchTerm: string) => void];
+
+export interface IGeereedHeaderCell { sortKey: string; sortType: string; column: IGeereedColumn; onSortCallback: IUseGeereedSort[2] }

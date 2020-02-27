@@ -1,11 +1,12 @@
 import React from 'react';
+import { IUseGeereedSort } from '../typings';
 
 export enum SORT_TYPES {
     ASC = 'ASC',
     DES = 'DES'
 }
 
-export function useGeereedSort(): [string, SORT_TYPES.ASC | SORT_TYPES.DES, (key: string) => void] {
+export function useGeereedSort(): IUseGeereedSort {
     const [sortKey, setSortKey] = React.useState('');
     const [sortType, setSortType] = React.useState(SORT_TYPES.ASC);
 
