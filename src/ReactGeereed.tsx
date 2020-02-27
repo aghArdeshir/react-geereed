@@ -1,6 +1,6 @@
 import React from 'react';
 import { IReactGeereedProps, IGeereedColumn, IGeereedItem } from './typings';
-import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-hook';
+import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items'
 
 function ReactGeereed(props: IReactGeereedProps) {

@@ -1,5 +1,5 @@
 import { IGeereedItem } from "../typings";
-import { SORT_TYPES } from "./use-geereed-hook";
+import { SORT_TYPES } from "./use-geereed-sort";
 
 export function useGeereedItems(items: IGeereedItem[], options: { sortKey?: string, sortType?: string } = {}) {
     const { sortKey, sortType } = options
