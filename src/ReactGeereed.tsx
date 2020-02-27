@@ -1,11 +1,12 @@
 import React from 'react';
 import { IReactGeereedProps, IGeereedColumn, IGeereedItem } from './typings';
 import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-hook';
+import { useGeereedItems } from './hooks/use-geereed-items'
 
 function ReactGeereed(props: IReactGeereedProps) {
   const { columns, items } = props;
-
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
+  const _items = useGeereedItems(items, { sortKey, sortType });
 
   return (
     <table className="react-geereed">
@@ -29,7 +30,7 @@ function ReactGeereed(props: IReactGeereedProps) {
         </tr>
       </thead>
       <tbody>
-        {items.map((item: IGeereedItem, index: number) => <tr key={index}> {/** TOOD: do something with key */}
+        {_items.map((item: IGeereedItem, index: number) => <tr key={index}> {/** TOOD: do something with key */}
           {columns.map((column: IGeereedColumn) => <td key={column.key}>{item[column.key]}</td>)}
         </tr>)}
       </tbody>
