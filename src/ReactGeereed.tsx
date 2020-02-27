@@ -1,8 +1,9 @@
 import React from 'react';
 import { IReactGeereedProps, IGeereedColumn, IGeereedItem } from './typings';
-import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
+import { useGeereedSort } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items'
 import { useGeereedSearch } from './hooks/use-geereed-search';
+import GeereedHeaderCell from './components/GeereedHeaderCell';
 
 function ReactGeereed(props: IReactGeereedProps) {
   const { columns, items } = props;
@@ -16,19 +17,13 @@ function ReactGeereed(props: IReactGeereedProps) {
       <thead>
         <tr>
           {columns.map((column: IGeereedColumn) => (
-            <th
+            <GeereedHeaderCell
               key={column.key}
-              style={{ color: sortKey === column.key ? 'red' : '' }}
-              onClick={() => onSortCallback(column.key)}
-            >
-              <div style={{ display: 'flex' }}>
-                {column.title || column.key}
-                <span style={{ marginLeft: 10, minWidth: 25 }}>
-                  {sortKey === column.key && sortType === SORT_TYPES.ASC ? <>&#9196;</> : <></>}
-                  {sortKey === column.key && sortType === SORT_TYPES.DES ? <>&#9195;</> : <></>}
-                </span>
-              </div>
-            </th>
+              sortKey={sortKey}
+              sortType={sortType}
+              column={column}
+              onSortCallback={onSortCallback}
+            ></GeereedHeaderCell>
           ))}
         </tr>
       </thead>
