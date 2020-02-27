@@ -4,7 +4,7 @@ import { IReactGeereedProps, IGeereedColumn, IGeereedItem } from './typings';
 function ReactGeereed(props: IReactGeereedProps) {
   const { columns, items } = props;
   return (
-    <table>
+    <table className="react-geereed">
       <thead>
         <tr>
           {columns.map((column: IGeereedColumn) => <th key={column.key}>{column.title || column.key}</th>)}
