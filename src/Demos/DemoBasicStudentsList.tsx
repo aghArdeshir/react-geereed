@@ -15,16 +15,35 @@ export default function DemoBasicStudentsList() {
     []
   );
 
-  const items = React.useMemo(
-    () =>
-      new Array(10).fill(1).map(() => ({
-        Name: randomName(),
-        LastName: randomLastName(),
-        Age: getRandom(100),
-        AverageMarks: getRandom(20)
-      })),
-    []
+  const [items, setItems] = React.useState(
+    new Array(10).fill(1).map(() => ({
+      Name: randomName(),
+      LastName: randomLastName(),
+      Age: getRandom(100),
+      AverageMarks: getRandom(20)
+    }))
   );
 
-  return <ReactGeereed columns={columns} items={items} />;
+  const actions = React.useCallback(
+    (rowItem, rowIndex: number) => {
+      return (
+        <>
+          <button
+            onClick={() => {
+              if (window.confirm('sure?')) {
+                const _items = [...items];
+                _items.splice(rowIndex, 1);
+                setItems(_items);
+              }
+            }}
+          >
+            Delete
+          </button>
+        </>
+      );
+    },
+    [items]
+  );
+
+  return <ReactGeereed columns={columns} items={items} actions={actions} />;
 }

@@ -1,3 +1,5 @@
+import { ReactElement } from 'react';
+
 export interface IGeereedColumn {
   key: string;
   title?: string;
@@ -10,6 +12,7 @@ export interface IGeereedItem {
 export interface IReactGeereedProps {
   columns: IGeereedColumn[];
   items: IGeereedItem[];
+  actions?: (rowItem: any, rowIndex: number) => ReactElement;
 }
 
 export interface IUseGeereedItemsOptions {

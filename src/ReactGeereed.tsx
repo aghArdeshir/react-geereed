@@ -8,7 +8,7 @@ import { useGeereedFilter } from './hooks/use-geereed-filter';
 import { useGeereedSelect } from './hooks/use-geereed-select';
 
 function ReactGeereed(props: IReactGeereedProps) {
-  const { columns, items } = props;
+  const { columns, items, actions } = props;
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
   const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
@@ -33,6 +33,7 @@ function ReactGeereed(props: IReactGeereedProps) {
           <tr>
             <th></th>
             {/* above line is for checkbox */}
+            {actions ? <th>Actions</th> : <></>}
             {columns.map((column: IGeereedColumn) => (
               <GeereedHeaderCell
                 key={column.key}
@@ -57,6 +58,7 @@ function ReactGeereed(props: IReactGeereedProps) {
                   onClick={() => selectRow(item)}
                 />
               </td>
+              {actions ? <td>{actions(item, index)}</td> : <></>}
               {columns.map((column: IGeereedColumn) => (
                 <td key={column.key}>{item[column.key]}</td>
               ))}
@@ -69,3 +71,9 @@ function ReactGeereed(props: IReactGeereedProps) {
 }
 
 export default ReactGeereed;
+
+/**
+ * TODO:
+ *    - inline editor
+ *    - DnD
+ */
