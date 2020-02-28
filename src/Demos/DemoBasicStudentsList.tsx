@@ -45,5 +45,22 @@ export default function DemoBasicStudentsList() {
     [items]
   );
 
-  return <ReactGeereed columns={columns} items={items} actions={actions} />;
+  const onDragEnd = React.useCallback(
+    (sourceIndex, destinationIndex) => {
+      const _items = [...items];
+      const removedItem = _items.splice(sourceIndex, 1)[0];
+      _items.splice(destinationIndex, 0, removedItem);
+      setItems(_items);
+    },
+    [items]
+  );
+
+  return (
+    <ReactGeereed
+      columns={columns}
+      items={items}
+      actions={actions}
+      onDragEnd={onDragEnd}
+    />
+  );
 }
