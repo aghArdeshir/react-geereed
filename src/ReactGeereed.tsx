@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -7,7 +7,12 @@ import {
   DraggableProvided
 } from 'react-beautiful-dnd';
 
-import { IReactGeereedProps, IGeereedColumn, IGeereedItem } from './typings';
+import {
+  IReactGeereedProps,
+  IGeereedColumn,
+  IGeereedItem,
+  IGeereedRef
+} from './typings';
 import { useGeereedSort } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
@@ -15,22 +20,51 @@ import GeereedHeaderCell from './components/GeereedHeaderCell';
 import { useGeereedFilter } from './hooks/use-geereed-filter';
 import { useGeereedSelect } from './hooks/use-geereed-select';
 import useGeereedDnd from './hooks/use-geereed-dnd';
+import { useGeereedEditor } from './hooks/use-geereed-editor';
 
 const noop = () => {};
+const jsxNoop = () => <></>;
 
-function ReactGeereed(props: IReactGeereedProps) {
-  const { columns, items, actions, onDragEnd } = props;
+function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
+  const {
+    columns,
+    items,
+    actions,
+    onDragEnd = noop,
+    editActions = jsxNoop
+  } = props;
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
   const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
   const [selectedRows, selectRow] = useGeereedSelect();
-  const disableDnd = useGeereedDnd(sortKey, searchTerm, columnFilters);
+  const [editingIndex, setEditingIndex] = useGeereedEditor();
+  const disableDnd = useGeereedDnd(
+    sortKey,
+    searchTerm,
+    columnFilters,
+    editingIndex
+  );
+
   const _items = useGeereedItems(items, {
     sortKey,
     sortType,
     searchTerm,
     columnFilters
   });
+
+  const addNew = React.useCallback(() => {
+    setEditingIndex(-1);
+  }, [setEditingIndex]);
+  const cancelAdd = React.useCallback(() => {
+    setEditingIndex(null);
+  }, [setEditingIndex]);
+  React.useImperativeHandle(
+    ref,
+    (): IGeereedRef => ({
+      addNew,
+      cancelAdd
+    })
+  );
 
   return (
     <>
@@ -62,7 +96,7 @@ function ReactGeereed(props: IReactGeereedProps) {
         <DragDropContext
           onDragEnd={dragInfo => {
             if (dragInfo.destination) {
-              const callback = onDragEnd || noop;
+              const callback = onDragEnd;
               callback(dragInfo.source.index, dragInfo.destination?.index);
             }
           }}
@@ -89,6 +123,7 @@ function ReactGeereed(props: IReactGeereedProps) {
                           <input
                             type="checkbox"
                             checked={selectedRows.indexOf(item) > -1}
+                            // `noop` below, because React nags about uncontrolled & controlled stuff ...
                             onChange={noop}
                             onClick={() => selectRow(item)}
                           />
@@ -98,15 +133,19 @@ function ReactGeereed(props: IReactGeereedProps) {
                             <div
                               style={{ display: 'flex', alignItems: 'center' }}
                             >
-                              <div
-                                {...draggableProvided.dragHandleProps}
-                                style={{
-                                  width: 20,
-                                  height: 20,
-                                  backgroundColor: 'red',
-                                  marginRight: 5
-                                }}
-                              ></div>
+                              {disableDnd ? (
+                                <></>
+                              ) : (
+                                <div
+                                  {...draggableProvided.dragHandleProps}
+                                  style={{
+                                    width: 20,
+                                    height: 20,
+                                    backgroundColor: 'red',
+                                    marginRight: 5
+                                  }}
+                                />
+                              )}
                               {actions(item, index)}
                             </div>
                           </td>
@@ -120,6 +159,21 @@ function ReactGeereed(props: IReactGeereedProps) {
                     )}
                   </Draggable>
                 ))}
+                {editingIndex === -1 ? (
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div style={{ display: 'flex' }}>{editActions()}</div>
+                    </td>
+                    {columns.map((column: IGeereedColumn) => (
+                      <td key={column.key}>
+                        {(column.editor || noop)() || <></>}
+                      </td>
+                    ))}
+                  </tr>
+                ) : (
+                  <></>
+                )}
                 {droppableProvided.placeholder}
               </tbody>
             )}
@@ -130,10 +184,9 @@ function ReactGeereed(props: IReactGeereedProps) {
   );
 }
 
-export default ReactGeereed;
+export default React.forwardRef(ReactGeereed);
 
 /**
  * TODO:
- *    - inline editor
  *    - other filter components (boolean siwtch, combobox, etc...)
  */

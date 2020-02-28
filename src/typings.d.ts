@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 export interface IGeereedColumn {
   key: string;
   title?: string;
+  editor?: ReactComponentElement;
 }
 
 export interface IGeereedItem {
@@ -13,6 +14,7 @@ export interface IReactGeereedProps {
   columns: IGeereedColumn[];
   items: IGeereedItem[];
   actions?: (rowItem: any, rowIndex: number) => ReactElement;
+  editActions?: () => ReactElement;
   onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
 }
 
@@ -49,3 +51,8 @@ export interface IGeereedFilterAction {
 }
 
 export type IUseGeereedSelect = [any[], (rowItem: any) => void];
+
+export interface IGeereedRef {
+  addNew: () => void;
+  cancelAdd: () => void;
+}
