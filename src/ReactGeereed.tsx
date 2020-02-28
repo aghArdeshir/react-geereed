@@ -5,12 +5,14 @@ import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
 import GeereedHeaderCell from './components/GeereedHeaderCell';
 import { useGeereedFilter } from './hooks/use-geereed-filter';
+import { useGeereedSelect } from './hooks/use-grid-select';
 
 function ReactGeereed(props: IReactGeereedProps) {
   const { columns, items } = props;
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
   const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
+  const [selectedRows, selectRow] = useGeereedSelect();
   const _items = useGeereedItems(items, {
     sortKey,
     sortType,
@@ -29,6 +31,8 @@ function ReactGeereed(props: IReactGeereedProps) {
       <table className="react-geereed">
         <thead>
           <tr>
+            <th></th>
+            {/* above line is for checkbox */}
             {columns.map((column: IGeereedColumn) => (
               <GeereedHeaderCell
                 key={column.key}
@@ -45,6 +49,14 @@ function ReactGeereed(props: IReactGeereedProps) {
         <tbody>
           {_items.map((item: IGeereedItem, index: number) => (
             <tr /** TOOD: do something with key */ key={index}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.indexOf(item) > -1}
+                  onChange={() => {}}
+                  onClick={() => selectRow(item)}
+                />
+              </td>
               {columns.map((column: IGeereedColumn) => (
                 <td key={column.key}>{item[column.key]}</td>
               ))}

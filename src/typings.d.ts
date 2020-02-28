@@ -43,3 +43,5 @@ export interface IGeereedFilterAction {
   columnKey: string;
   value: string;
 }
+
+export type IUseGeereedSelect = [any[], (rowItem: any) => void];
