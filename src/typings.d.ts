@@ -13,6 +13,7 @@ export interface IReactGeereedProps {
   columns: IGeereedColumn[];
   items: IGeereedItem[];
   actions?: (rowItem: any, rowIndex: number) => ReactElement;
+  onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
 }
 
 export interface IUseGeereedItemsOptions {
