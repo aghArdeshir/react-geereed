@@ -13,10 +13,9 @@ import {
   IGeereedItem,
   IGeereedRef
 } from './typings';
-import { useGeereedSort } from './hooks/use-geereed-sort';
+import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
-import GeereedHeaderCell from './components/GeereedHeaderCell';
 import { useGeereedFilter } from './hooks/use-geereed-filter';
 import { useGeereedSelect } from './hooks/use-geereed-select';
 import useGeereedDnd from './hooks/use-geereed-dnd';
@@ -92,15 +91,37 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
             {/* above line is for checkbox */}
             {actions ? <th>Actions</th> : <></>}
             {columns.map((column: IGeereedColumn) => (
-              <GeereedHeaderCell
+              <th
+                style={{ color: sortKey === column.key ? 'red' : '' }}
                 key={column.key}
-                sortKey={sortKey}
-                sortType={sortType}
-                column={column}
-                onSortCallback={onSortCallback}
-                columnFilter={columnFilters[column.key || '']}
-                dispatchColumnFilters={dispatchColumnFilters}
-              ></GeereedHeaderCell>
+              >
+                <div style={{ display: 'flex' }}>
+                  <span onClick={() => onSortCallback(column.key)}>
+                    {column.title || column.key}
+                    <span style={{ marginLeft: 10, minWidth: 25 }}>
+                      {sortKey === column.key && sortType === SORT_TYPES.ASC ? (
+                        <>&#9196;</>
+                      ) : (
+                        <></>
+                      )}
+                      {sortKey === column.key && sortType === SORT_TYPES.DES ? (
+                        <>&#9195;</>
+                      ) : (
+                        <></>
+                      )}
+                    </span>
+                  </span>
+                  <input
+                    value={columnFilters[column.key || ''] || ''}
+                    onChange={e =>
+                      dispatchColumnFilters({
+                        value: e.target.value,
+                        columnKey: column.key
+                      })
+                    }
+                  />
+                </div>
+              </th>
             ))}
           </tr>
         </thead>
