@@ -5,7 +5,7 @@ import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
 import GeereedHeaderCell from './components/GeereedHeaderCell';
 import { useGeereedFilter } from './hooks/use-geereed-filter';
-import { useGeereedSelect } from './hooks/use-grid-select';
+import { useGeereedSelect } from './hooks/use-geereed-select';
 
 function ReactGeereed(props: IReactGeereedProps) {
   const { columns, items } = props;
