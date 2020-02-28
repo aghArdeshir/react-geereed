@@ -14,7 +14,7 @@ export interface IReactGeereedProps {
   columns: IGeereedColumn[];
   items: IGeereedItem[];
   actions?: (rowItem: any, rowIndex: number) => ReactElement;
-  editActions?: () => ReactElement;
+  editActions?: (rowItem?: any, rowIndex?: number) => ReactElement;
   onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
 }
 
@@ -55,4 +55,6 @@ export type IUseGeereedSelect = [any[], (rowItem: any) => void];
 export interface IGeereedRef {
   addNew: () => void;
   cancelAdd: () => void;
+  setEdit: (rowIndex: number) => void;
+  cancelEdit: () => void;
 }

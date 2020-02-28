@@ -73,6 +73,14 @@ export default function DemoBasicStudentsList() {
           >
             Delete
           </button>
+          <button
+            onClick={() => {
+              gridRef.current?.setEdit(rowIndex);
+              dispatchNewItem(rowItem);
+            }}
+          >
+            Edit
+          </button>
         </>
       );
     },
@@ -90,22 +98,45 @@ export default function DemoBasicStudentsList() {
   );
 
   const editActions = React.useCallback(
-    () => (
-      <>
-        <button
-          onClick={() => {
-            setItems(_items => _items.concat(newItemState));
-            dispatchNewItem(null);
-            gridRef.current?.cancelAdd();
-          }}
-          disabled={!newItemState.Name}
-        >
-          Add
-        </button>
-        <button onClick={() => gridRef.current?.cancelAdd()}>Cancel</button>
-      </>
-    ),
-    [newItemState]
+    (rowItem?: any, rowIndex?: number) => {
+      if (rowIndex || rowIndex === 0) {
+        return (
+          <>
+            <button
+              onClick={() => {
+                const _items = [...items];
+                _items.splice(rowIndex, 1, newItemState);
+                setItems(_items);
+                dispatchNewItem(null);
+                gridRef.current?.cancelEdit();
+              }}
+              disabled={!newItemState.Name}
+            >
+              Edit
+            </button>
+            <button onClick={() => gridRef.current?.cancelEdit()}>
+              Cancel
+            </button>
+          </>
+        );
+      }
+      return (
+        <>
+          <button
+            onClick={() => {
+              setItems(_items => _items.concat(newItemState));
+              dispatchNewItem(null);
+              gridRef.current?.cancelAdd();
+            }}
+            disabled={!newItemState.Name}
+          >
+            Add
+          </button>
+          <button onClick={() => gridRef.current?.cancelAdd()}>Cancel</button>
+        </>
+      );
+    },
+    [items, newItemState]
   );
 
   return (

@@ -58,11 +58,22 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
   const cancelAdd = React.useCallback(() => {
     setEditingIndex(null);
   }, [setEditingIndex]);
+  const setEdit = React.useCallback(
+    (itemIndex: number) => {
+      setEditingIndex(itemIndex);
+    },
+    [setEditingIndex]
+  );
+  const cancelEdit = React.useCallback(() => {
+    setEditingIndex(null);
+  }, [setEditingIndex]);
   React.useImperativeHandle(
     ref,
     (): IGeereedRef => ({
       addNew,
-      cancelAdd
+      cancelAdd,
+      setEdit,
+      cancelEdit
     })
   );
 
@@ -146,14 +157,20 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                                   }}
                                 />
                               )}
-                              {actions(item, index)}
+                              {editingIndex === index
+                                ? editActions(item, index)
+                                : actions(item, index)}
                             </div>
                           </td>
                         ) : (
                           <></>
                         )}
                         {columns.map((column: IGeereedColumn) => (
-                          <td key={column.key}>{item[column.key]}</td>
+                          <td key={column.key}>
+                            {editingIndex === index && column.editor
+                              ? column.editor()
+                              : item[column.key]}
+                          </td>
                         ))}
                       </tr>
                     )}
