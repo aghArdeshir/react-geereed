@@ -76,4 +76,5 @@ export default ReactGeereed;
  * TODO:
  *    - inline editor
  *    - DnD
+ *    - other filter components (boolean siwtch, combobox, etc...)
  */
