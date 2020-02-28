@@ -9,16 +9,19 @@ const mockItems = new Array(10).fill(1).map(() => ({
   AverageMarks: getRandom(20)
 }));
 
-const columns = [
-  {
-    key: 'Name' // title will be set equal to key if not provided
-  },
-  { key: 'LastName', title: 'Last Name' },
-  { key: 'Age' },
-  { key: 'AverageMarks', title: 'Average Marks' }
-];
-
 export default function DemoBasicStudentsList() {
+  const columns = React.useMemo(
+    () => [
+      {
+        key: 'Name' // title will be set equal to key if not provided
+      },
+      { key: 'LastName', title: 'Last Name' },
+      { key: 'Age' },
+      { key: 'AverageMarks', title: 'Average Marks' }
+    ],
+    []
+  );
+
   const [items, setItems] = React.useState(mockItems);
 
   const actions = React.useCallback(
