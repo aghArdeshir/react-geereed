@@ -227,4 +227,5 @@ export default React.forwardRef(ReactGeereed);
 /**
  * TODO:
  *    - other filter components (boolean siwtch, combobox, etc...)
+      - pagination
  */
