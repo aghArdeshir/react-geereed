@@ -1,15 +1,19 @@
 import React from 'react';
-import { randomName, randomLastName, getRandom } from './Demo.Service';
+import {
+  randomLastName,
+  getRandom,
+  randomRepetitiveName,
+} from './Demo.Service';
 import ReactGeereed from '../ReactGeereed';
 import { IGeereedRef } from '../typings';
 
 type IStudent = any;
 
 const mockItems: IStudent[] = new Array(10).fill(1).map(() => ({
-  Name: randomName(),
+  Name: randomRepetitiveName(),
   LastName: randomLastName(),
   Age: getRandom(100),
-  AverageMarks: getRandom(20)
+  AverageMarks: getRandom(20),
 }));
 
 export default function DemoBasicStudentsList() {
@@ -35,7 +39,7 @@ export default function DemoBasicStudentsList() {
             }}
             value={newItemState.Name || ''}
           />
-        ) // title will be set equal to key if not provided
+        ), // title will be set equal to key if not provided
       },
       { key: 'LastName', title: 'Last Name' },
       {
@@ -48,9 +52,9 @@ export default function DemoBasicStudentsList() {
             value={newItemState.Age || ''}
             type="number"
           />
-        )
+        ),
       },
-      { key: 'AverageMarks', title: 'Average Marks' }
+      { key: 'AverageMarks', title: 'Average Marks' },
     ],
     [newItemState.Age, newItemState.Name]
   );
@@ -149,6 +153,7 @@ export default function DemoBasicStudentsList() {
         onDragEnd={onDragEnd}
         ref={gridRef}
         editActions={editActions}
+        groupBy={columns[0].key}
       />
     </>
   );

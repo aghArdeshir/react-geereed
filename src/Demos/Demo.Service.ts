@@ -99,7 +99,7 @@ const mockNames = [
   'Ellen (Ellia)',
   'Tanisha',
   'Esther (Hester)',
-  'Grace'
+  'Grace',
 ];
 const mockLastNames = [
   'Hayes',
@@ -196,11 +196,15 @@ const mockLastNames = [
   'Avila',
   'Frazier',
   'Barlow',
-  'Miller'
+  'Miller',
 ];
 
 export function randomName() {
   return mockNames[getRandom(mockNames.length)];
+}
+
+export function randomRepetitiveName() {
+  return mockNames[getRandom(3)];
 }
 
 export function randomLastName() {
