@@ -9,12 +9,13 @@ import { IGeereedRef } from '../typings';
 
 type IStudent = any;
 
-const mockItems: IStudent[] = new Array(10).fill(1).map(() => ({
-  Name: randomRepetitiveName(),
-  LastName: randomLastName(),
-  Age: getRandom(100),
-  AverageMarks: getRandom(20),
-}));
+const regenerateMockItems: () => IStudent[] = () =>
+  new Array(10).fill(1).map(() => ({
+    Name: randomRepetitiveName(),
+    LastName: randomLastName(),
+    Age: getRandom(100),
+    AverageMarks: getRandom(20),
+  }));
 
 export default function DemoBasicStudentsList() {
   const [newItemState, dispatchNewItem] = React.useReducer(
@@ -59,7 +60,14 @@ export default function DemoBasicStudentsList() {
     [newItemState.Age, newItemState.Name]
   );
 
-  const [items, setItems] = React.useState(mockItems);
+  const [items, setItems] = React.useState(regenerateMockItems());
+  const [page, setPage] = React.useState(1);
+
+  const reGenerateMockItems = React.useCallback(page => {
+    setItems(regenerateMockItems());
+    setPage(page);
+  }, []);
+
   const gridRef = React.useRef<IGeereedRef>(null);
 
   const actions = React.useCallback(
@@ -153,7 +161,9 @@ export default function DemoBasicStudentsList() {
         onDragEnd={onDragEnd}
         ref={gridRef}
         editActions={editActions}
-        groupBy={columns[0].key}
+        // groupBy={columns[0].key}
+        pagination={{ page, totalPages: 10, itemsPerPage: 5 }}
+        onPage={reGenerateMockItems}
       />
     </>
   );
