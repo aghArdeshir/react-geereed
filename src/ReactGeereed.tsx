@@ -4,22 +4,24 @@ import {
   Droppable,
   DroppableProvided,
   Draggable,
-  DraggableProvided
+  DraggableProvided,
 } from 'react-beautiful-dnd';
 
 import {
   IReactGeereedProps,
   IGeereedColumn,
   IGeereedItem,
-  IGeereedRef
+  IGeereedRef,
+  IGeereedRenderRowOptions,
 } from './typings';
 import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
 import { useGeereedFilter } from './hooks/use-geereed-filter';
 import { useGeereedSelect } from './hooks/use-geereed-select';
-import useGeereedDnd from './hooks/use-geereed-dnd';
+import { useGeereedDnd } from './hooks/use-geereed-dnd';
 import { useGeereedEditor } from './hooks/use-geereed-editor';
+import { useGeereedColumns } from './hooks/use-geereed-columns';
 
 const noop = () => {};
 const jsxNoop = () => <></>;
@@ -30,7 +32,8 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     items,
     actions,
     onDragEnd = noop,
-    editActions = jsxNoop
+    editActions = jsxNoop,
+    groupBy,
   } = props;
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
@@ -43,13 +46,17 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     columnFilters,
     editingIndex
   );
-
   const _items = useGeereedItems(items, {
     sortKey,
     sortType,
     searchTerm,
-    columnFilters
+    columnFilters,
+    groupBy,
   });
+  const [_columns, , expandedState, dispatchExpandedState] = useGeereedColumns(
+    columns,
+    groupBy
+  );
 
   const addNew = React.useCallback(() => {
     setEditingIndex(-1);
@@ -72,8 +79,80 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
       addNew,
       cancelAdd,
       setEdit,
-      cancelEdit
+      cancelEdit,
     })
+  );
+  const renderRow = React.useCallback(
+    (
+      item: IGeereedItem,
+      index: number,
+      options: IGeereedRenderRowOptions = { display: '' }
+    ) => (
+      <Draggable
+        /** TOOD: do something with key */ key={index}
+        draggableId={`geereed-row-${index}`}
+        index={index}
+        isDragDisabled={disableDnd}
+      >
+        {(draggableProvided: DraggableProvided) => (
+          <tr
+            {...draggableProvided.draggableProps}
+            ref={draggableProvided.innerRef}
+            style={{ display: options.display }}
+          >
+            <td>
+              <input
+                type="checkbox"
+                checked={selectedRows.indexOf(item) > -1}
+                // `noop` below, because React nags about uncontrolled & controlled stuff ...
+                onChange={noop}
+                onClick={() => selectRow(item)}
+              />
+            </td>
+            {actions ? (
+              <td>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {disableDnd ? (
+                    <></>
+                  ) : (
+                    <div
+                      {...draggableProvided.dragHandleProps}
+                      style={{
+                        width: 20,
+                        height: 20,
+                        backgroundColor: 'red',
+                        marginRight: 5,
+                      }}
+                    />
+                  )}
+                  {editingIndex === index
+                    ? editActions(item, index)
+                    : actions(item, index)}
+                </div>
+              </td>
+            ) : (
+              <></>
+            )}
+            {_columns.map((column: IGeereedColumn) => (
+              <td key={column.key}>
+                {editingIndex === index && column.editor
+                  ? column.editor()
+                  : item[column.key]}
+              </td>
+            ))}
+          </tr>
+        )}
+      </Draggable>
+    ),
+    [
+      _columns,
+      actions,
+      disableDnd,
+      editActions,
+      editingIndex,
+      selectRow,
+      selectedRows,
+    ]
   );
 
   return (
@@ -90,7 +169,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
             <th></th>
             {/* above line is for checkbox */}
             {actions ? <th>Actions</th> : <></>}
-            {columns.map((column: IGeereedColumn) => (
+            {_columns.map((column: IGeereedColumn) => (
               <th
                 style={{ color: sortKey === column.key ? 'red' : '' }}
                 key={column.key}
@@ -116,7 +195,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                     onChange={e =>
                       dispatchColumnFilters({
                         value: e.target.value,
-                        columnKey: column.key
+                        columnKey: column.key,
                       })
                     }
                   />
@@ -139,71 +218,60 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                 {...droppableProvided.droppableProps}
                 ref={droppableProvided.innerRef}
               >
-                {_items.map((item: IGeereedItem, index: number) => (
-                  <Draggable
-                    /** TOOD: do something with key */ key={index}
-                    draggableId={`geereed-row-${index}`}
-                    index={index}
-                    isDragDisabled={disableDnd}
-                  >
-                    {(draggableProvided: DraggableProvided) => (
-                      <tr
-                        {...draggableProvided.draggableProps}
-                        ref={draggableProvided.innerRef}
-                      >
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedRows.indexOf(item) > -1}
-                            // `noop` below, because React nags about uncontrolled & controlled stuff ...
-                            onChange={noop}
-                            onClick={() => selectRow(item)}
-                          />
-                        </td>
-                        {actions ? (
-                          <td>
-                            <div
-                              style={{ display: 'flex', alignItems: 'center' }}
+                {groupBy ? (
+                  _items
+                    .reduce((acc, cur, idx, src) => {
+                      if (idx === 0 || cur[groupBy] !== src[idx - 1][groupBy]) {
+                        return acc.concat(cur);
+                      }
+                      return acc;
+                    }, [])
+                    .map((groupByParentItem: IGeereedItem, index: number) => (
+                      <React.Fragment key={index}>
+                        <tr>
+                          <td colSpan={columns.length}>
+                            <button
+                              onClick={() =>
+                                dispatchExpandedState(
+                                  groupByParentItem[groupBy]
+                                )
+                              }
                             >
-                              {disableDnd ? (
-                                <></>
-                              ) : (
-                                <div
-                                  {...draggableProvided.dragHandleProps}
-                                  style={{
-                                    width: 20,
-                                    height: 20,
-                                    backgroundColor: 'red',
-                                    marginRight: 5
-                                  }}
-                                />
-                              )}
-                              {editingIndex === index
-                                ? editActions(item, index)
-                                : actions(item, index)}
-                            </div>
+                              expand/collapse
+                            </button>
+                            <b style={{ marginLeft: 10 }}>({groupBy}):</b>
+                            <span style={{ marginLeft: 10 }}>
+                              {groupByParentItem[groupBy]}
+                            </span>
                           </td>
-                        ) : (
-                          <></>
-                        )}
-                        {columns.map((column: IGeereedColumn) => (
-                          <td key={column.key}>
-                            {editingIndex === index && column.editor
-                              ? column.editor()
-                              : item[column.key]}
-                          </td>
-                        ))}
-                      </tr>
+                        </tr>
+                        {_items
+                          .filter(
+                            item => item[groupBy] === groupByParentItem[groupBy]
+                          )
+                          .map((item: IGeereedItem, index: number) =>
+                            renderRow(item, index, {
+                              display: expandedState[item[groupBy]]
+                                ? ''
+                                : 'none',
+                            })
+                          )}
+                      </React.Fragment>
+                    ))
+                ) : (
+                  <>
+                    {_items.map((item: IGeereedItem, index: number) =>
+                      renderRow(item, index)
                     )}
-                  </Draggable>
-                ))}
+                  </>
+                )}
                 {editingIndex === -1 ? (
                   <tr>
                     <td></td>
                     <td>
                       <div style={{ display: 'flex' }}>{editActions()}</div>
                     </td>
-                    {columns.map((column: IGeereedColumn) => (
+                    {_columns.map((column: IGeereedColumn) => (
                       <td key={column.key}>
                         {(column.editor || noop)() || <></>}
                       </td>

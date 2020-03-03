@@ -1,6 +1,6 @@
 import { IGeereedFilterState } from '../typings';
 
-export default function useGeereedDnd(
+export function useGeereedDnd(
   sortKey: string,
   searchTerm: string,
   columnFilters: IGeereedFilterState,
@@ -10,6 +10,7 @@ export default function useGeereedDnd(
     !!sortKey ||
     !!searchTerm ||
     Object.values(columnFilters).some(filter => !!filter) ||
-    !!editingIndex || editingIndex === 0
+    !!editingIndex ||
+    editingIndex === 0
   );
 }

@@ -13,6 +13,7 @@ export interface IGeereedItem {
 export interface IReactGeereedProps {
   columns: IGeereedColumn[];
   items: IGeereedItem[];
+  groupBy?: string;
   actions?: (rowItem: any, rowIndex: number) => ReactElement;
   editActions?: (rowItem?: any, rowIndex?: number) => ReactElement;
   onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
@@ -23,6 +24,7 @@ export interface IUseGeereedItemsOptions {
   sortType?: string;
   searchTerm?: string;
   columnFilters?: IGeereedFilterState;
+  groupBy?: string;
 }
 
 export type IUseGeereedSort = [
@@ -57,4 +59,15 @@ export interface IGeereedRef {
   cancelAdd: () => void;
   setEdit: (rowIndex: number) => void;
   cancelEdit: () => void;
+}
+
+export type IUseGeereedColumns = [
+  IGeereedColumn[],
+  IGeereedColumn | undefined,
+  { [key: string]: boolean },
+  React.Dispatch<(groupName: string) => void>
+];
+
+export interface IGeereedRenderRowOptions {
+  display?: '' | 'none';
 }

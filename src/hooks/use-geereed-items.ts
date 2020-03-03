@@ -36,8 +36,20 @@ export function useGeereedItems(
     }
   });
 
+  if (options.groupBy) {
+    result.sort((item1: IGeereedItem, item2: IGeereedItem) => {
+      return item1[options.groupBy!] < item2[options.groupBy!] ? -1 : 1;
+    });
+  }
+
   if (sortKey) {
     result.sort((item1: IGeereedItem, item2: IGeereedItem) => {
+      if (
+        options.groupBy &&
+        item1[options.groupBy] !== item2[options.groupBy]
+      ) {
+        return 0;
+      }
       if (sortType === SORT_TYPES.DES) {
         return item1[sortKey] > item2[sortKey] ? -1 : 1;
       } else if (sortType === SORT_TYPES.ASC) {
