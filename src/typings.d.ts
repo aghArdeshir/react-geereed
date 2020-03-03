@@ -14,9 +14,11 @@ export interface IReactGeereedProps {
   columns: IGeereedColumn[];
   items: IGeereedItem[];
   groupBy?: string;
+  pagination?: IGeereedPagination;
   actions?: (rowItem: any, rowIndex: number) => ReactElement;
   editActions?: (rowItem?: any, rowIndex?: number) => ReactElement;
   onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
+  onPage?: (page: number) => void;
 }
 
 export interface IUseGeereedItemsOptions {
@@ -70,4 +72,10 @@ export type IUseGeereedColumns = [
 
 export interface IGeereedRenderRowOptions {
   display?: '' | 'none';
+}
+
+export interface IGeereedPagination {
+  page: number; // start from 1
+  totalPages: number;
+  itemsPerPage?: number;
 }

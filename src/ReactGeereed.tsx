@@ -22,6 +22,7 @@ import { useGeereedSelect } from './hooks/use-geereed-select';
 import { useGeereedDnd } from './hooks/use-geereed-dnd';
 import { useGeereedEditor } from './hooks/use-geereed-editor';
 import { useGeereedColumns } from './hooks/use-geereed-columns';
+import Pagination from './components/Pagination';
 
 const noop = () => {};
 const jsxNoop = () => <></>;
@@ -34,7 +35,16 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     onDragEnd = noop,
     editActions = jsxNoop,
     groupBy,
+    pagination,
+    onPage,
   } = props;
+
+  if ((pagination && !onPage) || (onPage && !pagination)) {
+    throw new Error(
+      'ReactGeereed: Please provide both `pagination` and `onPage` props'
+    );
+  }
+
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
   const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
@@ -154,6 +164,10 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
       selectedRows,
     ]
   );
+  const actuallyRenderedColumnsCount = React.useMemo(
+    () => _columns.length + 1 + (actions ? 1 : 0),
+    [_columns.length, actions]
+  );
 
   return (
     <>
@@ -229,7 +243,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                     .map((groupByParentItem: IGeereedItem, index: number) => (
                       <React.Fragment key={index}>
                         <tr>
-                          <td colSpan={columns.length}>
+                          <td colSpan={actuallyRenderedColumnsCount}>
                             <button
                               onClick={() =>
                                 dispatchExpandedState(
@@ -285,6 +299,20 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
             )}
           </Droppable>
         </DragDropContext>
+        {pagination ? (
+          <tfoot>
+            <tr>
+              <td
+                colSpan={actuallyRenderedColumnsCount}
+                style={{ textAlign: 'right' }}
+              >
+                <Pagination pagination={pagination} onPage={onPage!} />
+              </td>
+            </tr>
+          </tfoot>
+        ) : (
+          <></>
+        )}
       </table>
     </>
   );
@@ -295,5 +323,5 @@ export default React.forwardRef(ReactGeereed);
 /**
  * TODO:
  *    - other filter components (boolean siwtch, combobox, etc...)
-      - pagination
+ *    - refresh & onRefresh callback
  */
