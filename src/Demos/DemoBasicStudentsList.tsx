@@ -63,9 +63,9 @@ export default function DemoBasicStudentsList() {
   const [items, setItems] = React.useState(regenerateMockItems());
   const [page, setPage] = React.useState(1);
 
-  const reGenerateMockItems = React.useCallback(page => {
+  const reGenerateMockItems = React.useCallback((page?) => {
     setItems(regenerateMockItems());
-    setPage(page);
+    if (page) setPage(page);
   }, []);
 
   const gridRef = React.useRef<IGeereedRef>(null);
@@ -164,6 +164,7 @@ export default function DemoBasicStudentsList() {
         // groupBy={columns[0].key}
         pagination={{ page, totalPages: 10, itemsPerPage: 5 }}
         onPage={reGenerateMockItems}
+        onRefresh={() => reGenerateMockItems()}
       />
     </>
   );

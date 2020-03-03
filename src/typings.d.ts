@@ -19,6 +19,7 @@ export interface IReactGeereedProps {
   editActions?: (rowItem?: any, rowIndex?: number) => ReactElement;
   onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
   onPage?: (page: number) => void;
+  onRefresh?: () => void;
 }
 
 export interface IUseGeereedItemsOptions {

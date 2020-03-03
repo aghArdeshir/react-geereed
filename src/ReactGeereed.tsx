@@ -37,6 +37,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     groupBy,
     pagination,
     onPage,
+    onRefresh,
   } = props;
 
   if ((pagination && !onPage) || (onPage && !pagination)) {
@@ -306,6 +307,11 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                 colSpan={actuallyRenderedColumnsCount}
                 style={{ textAlign: 'right' }}
               >
+                {onRefresh ? (
+                  <button onClick={onRefresh}>refresh</button>
+                ) : (
+                  <></>
+                )}
                 <Pagination pagination={pagination} onPage={onPage!} />
               </td>
             </tr>
@@ -323,5 +329,4 @@ export default React.forwardRef(ReactGeereed);
 /**
  * TODO:
  *    - other filter components (boolean siwtch, combobox, etc...)
- *    - refresh & onRefresh callback
  */
