@@ -5,7 +5,8 @@ import {
   randomRepetitiveName,
 } from './Demo.Service';
 import ReactGeereed from '../ReactGeereed';
-import { IGeereedRef } from '../typings';
+import { IGeereedRef, IGeereedColumn } from '../typings';
+import { useGeereedFilter } from '../hooks/use-geereed-filter';
 
 type IStudent = any;
 
@@ -29,35 +30,68 @@ export default function DemoBasicStudentsList() {
     {}
   );
 
+  const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
+
   const columns = React.useMemo(
-    () => [
-      {
-        key: 'Name',
-        editor: () => (
-          <input
-            onChange={e => {
-              dispatchNewItem({ Name: e.target.value });
-            }}
-            value={newItemState.Name || ''}
-          />
-        ), // title will be set equal to key if not provided
-      },
-      { key: 'LastName', title: 'Last Name' },
-      {
-        key: 'Age',
-        editor: () => (
-          <input
-            onChange={e => {
-              dispatchNewItem({ Age: e.target.value });
-            }}
-            value={newItemState.Age || ''}
-            type="number"
-          />
-        ),
-      },
-      { key: 'AverageMarks', title: 'Average Marks' },
-    ],
-    [newItemState.Age, newItemState.Name]
+    () =>
+      [
+        {
+          key: 'Name',
+          editor: () => (
+            <input
+              onChange={e => {
+                dispatchNewItem({ Name: e.target.value });
+              }}
+              value={newItemState.Name || ''}
+            />
+          ), // title will be set equal to key if not provided
+          filterComponent: () => (
+            <input
+              value={columnFilters.Name || ''}
+              onChange={e =>
+                dispatchColumnFilters({
+                  columnKey: 'Name',
+                  value: e.target.value,
+                })
+              }
+            />
+          ),
+        },
+        { key: 'LastName', title: 'Last Name' },
+        {
+          key: 'Age',
+          editor: () => (
+            <input
+              onChange={e => {
+                dispatchNewItem({ Age: e.target.value });
+              }}
+              value={newItemState.Age || ''}
+              type="number"
+            />
+          ),
+          filterComponent: () => (
+            <input
+              type="number"
+              min={0}
+              value={columnFilters.Age || ''}
+              onChange={e =>
+                dispatchColumnFilters({
+                  columnKey: 'Age',
+                  value: e.target.value,
+                })
+              }
+            />
+          ),
+        },
+        { key: 'AverageMarks', title: 'Average Marks' },
+      ] as IGeereedColumn[],
+    [
+      columnFilters.Age,
+      columnFilters.Name,
+      dispatchColumnFilters,
+      newItemState.Age,
+      newItemState.Name,
+    ]
   );
 
   const [items, setItems] = React.useState(regenerateMockItems());
@@ -165,6 +199,7 @@ export default function DemoBasicStudentsList() {
         pagination={{ page, totalPages: 10, itemsPerPage: 5 }}
         onPage={reGenerateMockItems}
         onRefresh={() => reGenerateMockItems()}
+        columnFilters={columnFilters}
       />
     </>
   );

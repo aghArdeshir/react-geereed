@@ -17,7 +17,6 @@ import {
 import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
-import { useGeereedFilter } from './hooks/use-geereed-filter';
 import { useGeereedSelect } from './hooks/use-geereed-select';
 import { useGeereedDnd } from './hooks/use-geereed-dnd';
 import { useGeereedEditor } from './hooks/use-geereed-editor';
@@ -38,6 +37,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     pagination,
     onPage,
     onRefresh,
+    columnFilters = {},
   } = props;
 
   if ((pagination && !onPage) || (onPage && !pagination)) {
@@ -48,7 +48,6 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
 
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
-  const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
   const [selectedRows, selectRow] = useGeereedSelect();
   const [editingIndex, setEditingIndex] = useGeereedEditor();
   const disableDnd = useGeereedDnd(
@@ -182,7 +181,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
         <thead>
           <tr>
             <th></th>
-            {/* above line is for checkbox */}
+            {/* above line is for selection checkbox */}
             {actions ? <th>Actions</th> : <></>}
             {_columns.map((column: IGeereedColumn) => (
               <th
@@ -205,15 +204,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                       )}
                     </span>
                   </span>
-                  <input
-                    value={columnFilters[column.key || ''] || ''}
-                    onChange={e =>
-                      dispatchColumnFilters({
-                        value: e.target.value,
-                        columnKey: column.key,
-                      })
-                    }
-                  />
+                  {(column.filterComponent || jsxNoop)()}
                 </div>
               </th>
             ))}
@@ -325,8 +316,3 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
 }
 
 export default React.forwardRef(ReactGeereed);
-
-/**
- * TODO:
- *    - other filter components (boolean siwtch, combobox, etc...)
- */

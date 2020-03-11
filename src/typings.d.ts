@@ -4,6 +4,7 @@ export interface IGeereedColumn {
   key: string;
   title?: string;
   editor?: ReactComponentElement;
+  filterComponent?: () => ReactElement;
 }
 
 export interface IGeereedItem {
@@ -20,6 +21,7 @@ export interface IReactGeereedProps {
   onDragEnd?: (sourceIndex: number, destinationIndex: number) => void;
   onPage?: (page: number) => void;
   onRefresh?: () => void;
+  columnFilters?: IGeereedFilterState;
 }
 
 export interface IUseGeereedItemsOptions {
