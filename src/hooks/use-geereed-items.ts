@@ -9,22 +9,20 @@ export function useGeereedItems(
   let result = [...items];
 
   if (searchTerm) {
-    result = result.filter(item => {
-      return Object.keys(item).some(key => {
+    result = result.filter((item) => {
+      return Object.keys(item).some((key) => {
         return (
-          item[key]
-            .toString()
-            .toLowerCase()
-            .indexOf(searchTerm.toLowerCase()) > -1
+          item[key].toString().toLowerCase().indexOf(searchTerm.toLowerCase()) >
+          -1
         );
       });
     });
   }
 
-  Object.keys(columnFilters || {}).forEach(columnKey => {
+  Object.keys(columnFilters || {}).forEach((columnKey) => {
     const columnFilterValue = (columnFilters || {})[columnKey];
     if (columnFilterValue) {
-      result = result.filter(item => {
+      result = result.filter((item) => {
         return (
           item[columnKey] === columnFilterValue ||
           item[columnKey]

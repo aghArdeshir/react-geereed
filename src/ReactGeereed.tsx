@@ -173,7 +173,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     <>
       <input
         value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search..."
         autoFocus
       />
@@ -211,7 +211,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
           </tr>
         </thead>
         <DragDropContext
-          onDragEnd={dragInfo => {
+          onDragEnd={(dragInfo) => {
             if (dragInfo.destination) {
               const callback = onDragEnd;
               callback(dragInfo.source.index, dragInfo.destination?.index);
@@ -253,7 +253,8 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                         </tr>
                         {_items
                           .filter(
-                            item => item[groupBy] === groupByParentItem[groupBy]
+                            (item) =>
+                              item[groupBy] === groupByParentItem[groupBy]
                           )
                           .map((item: IGeereedItem, index: number) =>
                             renderRow(item, index, {

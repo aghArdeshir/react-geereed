@@ -39,7 +39,7 @@ export default function DemoBasicStudentsList() {
           key: 'Name',
           editor: () => (
             <input
-              onChange={e => {
+              onChange={(e) => {
                 dispatchNewItem({ Name: e.target.value });
               }}
               value={newItemState.Name || ''}
@@ -48,7 +48,7 @@ export default function DemoBasicStudentsList() {
           filterComponent: () => (
             <input
               value={columnFilters.Name || ''}
-              onChange={e =>
+              onChange={(e) =>
                 dispatchColumnFilters({
                   columnKey: 'Name',
                   value: e.target.value,
@@ -62,7 +62,7 @@ export default function DemoBasicStudentsList() {
           key: 'Age',
           editor: () => (
             <input
-              onChange={e => {
+              onChange={(e) => {
                 dispatchNewItem({ Age: e.target.value });
               }}
               value={newItemState.Age || ''}
@@ -74,7 +74,7 @@ export default function DemoBasicStudentsList() {
               type="number"
               min={0}
               value={columnFilters.Age || ''}
-              onChange={e =>
+              onChange={(e) =>
                 dispatchColumnFilters({
                   columnKey: 'Age',
                   value: e.target.value,
@@ -170,7 +170,7 @@ export default function DemoBasicStudentsList() {
         <>
           <button
             onClick={() => {
-              setItems(_items => _items.concat(newItemState));
+              setItems((_items) => _items.concat(newItemState));
               dispatchNewItem(null);
               gridRef.current?.cancelAdd();
             }}

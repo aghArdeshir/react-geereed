@@ -5,7 +5,7 @@ export function useGeereedSelect(): IUseGeereedSelect {
   const [selectedRows, setSelectedRows] = useState([] as any[]);
 
   const selectRow = useCallback(
-    rowItem => {
+    (rowItem) => {
       if (selectedRows.indexOf(rowItem) === -1) {
         setSelectedRows(selectedRows.concat(rowItem));
       } else {

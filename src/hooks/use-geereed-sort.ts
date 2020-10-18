@@ -3,7 +3,7 @@ import { IUseGeereedSort } from '../typings';
 
 export enum SORT_TYPES {
   ASC = 'ASC',
-  DES = 'DES'
+  DES = 'DES',
 }
 
 export function useGeereedSort(): IUseGeereedSort {
