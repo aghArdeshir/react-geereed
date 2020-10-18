@@ -6,11 +6,12 @@ export function useGeereedDnd(
   columnFilters: IGeereedFilterState,
   editingIndex: number | null
 ) {
-  return (
+  const disableDnd =
     !!sortKey ||
     !!searchTerm ||
-    Object.values(columnFilters).some(filter => !!filter) ||
+    Object.values(columnFilters).some((filter) => !!filter) ||
     !!editingIndex ||
-    editingIndex === 0
-  );
+    editingIndex === 0;
+
+  return disableDnd;
 }
