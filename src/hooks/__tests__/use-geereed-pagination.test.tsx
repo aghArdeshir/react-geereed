@@ -16,6 +16,12 @@ function GeereedpaginationTestComponent(props: {
       <button onClick={() => setPage({ num: page.num + 1, rows: page.rows })}>
         Next Page
       </button>
+      <button onClick={() => setPage({ num: page.num, rows: 10 })}>
+        10 Rows
+      </button>
+      <button onClick={() => setPage({ num: page.num, rows: 20 })}>
+        20 Rows
+      </button>
     </>
   );
 }
@@ -29,4 +35,43 @@ test('page test', () => {
 
   fireEvent.click(screen.getByText('Next Page'));
   expect(container.textContent).toContain('page: 3');
+});
+
+test('rows test', () => {
+  const { container } = render(<GeereedpaginationTestComponent />);
+  expect(container.textContent).toContain('rows: 20');
+
+  fireEvent.click(screen.getByText('10 Rows'));
+  expect(container.textContent).toContain('rows: 10');
+
+  fireEvent.click(screen.getByText('20 Rows'));
+  expect(container.textContent).toContain('rows: 20');
+});
+
+test('default values test 1', () => {
+  const { container } = render(
+    <GeereedpaginationTestComponent defaultRowsPerPage={5} />
+  );
+  expect(container.textContent).toContain('page: 1 - rows: 5');
+});
+
+test('default values test 2', () => {
+  const { container } = render(
+    <GeereedpaginationTestComponent defaultRowsPerPage={80} />
+  );
+  expect(container.textContent).toContain('page: 1 - rows: 80');
+});
+
+test('default values test 3', () => {
+  const { container } = render(
+    <GeereedpaginationTestComponent defaultRowsPerPage={80} footer={false} />
+  );
+  expect(container.textContent).toContain('page: 1 - rows: Infinity');
+});
+
+test('default values test 4', () => {
+  const { container } = render(
+    <GeereedpaginationTestComponent footer={false} />
+  );
+  expect(container.textContent).toContain('page: 1 - rows: Infinity');
 });
