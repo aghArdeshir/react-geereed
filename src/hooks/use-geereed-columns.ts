@@ -1,14 +1,18 @@
 import { IGeereedColumn, IUseGeereedColumns } from '../typings';
-import { useReducer, useCallback } from 'react';
+import { useReducer, useCallback, useMemo } from 'react';
 
 export function useGeereedColumns(
   columns: IGeereedColumn[],
   groupBy?: string
 ): IUseGeereedColumns {
-  let _columns = [...columns];
-  if (groupBy) {
-    _columns = _columns.filter(column => column.key !== groupBy);
-  }
+  let _columns = useMemo(() => {
+    let cols = [...columns];
+    if (groupBy) {
+      cols = cols.filter((column) => column.key !== groupBy);
+    }
+    return cols;
+  }, [columns, groupBy]);
+
   const groupByStateReucer = useCallback((currentState, groupName) => {
     return { ...currentState, [groupName]: !currentState[groupName] };
   }, []);
@@ -18,7 +22,10 @@ export function useGeereedColumns(
   );
   return [
     _columns,
-    columns.find(column => column.key === groupBy),
+    useMemo(() => columns.find((column) => column.key === groupBy), [
+      columns,
+      groupBy,
+    ]),
     groupByStateHolder,
     dispatchGroupByStateHolder,
   ];
