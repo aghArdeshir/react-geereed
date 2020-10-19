@@ -31,6 +31,7 @@ function TestUseGeereedColumnComponent(props: { groupBy?: string }) {
 
   return (
     <>
+      <span>{_columns.map((c) => c.key)}</span>
       {Object.keys(groupByStateHolder).map((v) =>
         groupByStateHolder[v] ? (
           <React.Fragment key={v}>expanded: {v}</React.Fragment>
@@ -55,7 +56,13 @@ function TestUseGeereedColumnComponent(props: { groupBy?: string }) {
   );
 }
 
-test('simple test', async () => {
+test('columns should not include groupBy column', () => {
+  const { container } = render(<TestUseGeereedColumnComponent groupBy="Age" />);
+  expect(container.textContent).toContain('Father Name');
+  expect(container.textContent).not.toContain('Age');
+});
+
+test('expanding and collapsing groups hsould work', async () => {
   const { container } = render(<TestUseGeereedColumnComponent groupBy="Age" />);
   expect(container.textContent).not.toContain('expanded: 18');
 
