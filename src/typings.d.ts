@@ -70,7 +70,7 @@ export type IUseGeereedColumns = [
   IGeereedColumn[],
   IGeereedColumn | undefined,
   { [key: string]: boolean },
-  React.Dispatch<(groupName: string) => void>
+  (groupName: string) => void
 ];
 
 export interface IGeereedRenderRowOptions {
