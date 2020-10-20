@@ -2,7 +2,7 @@ import React from 'react';
 import { IUseGeereedSort } from '../typings.d';
 import { GEEREED_SORT_TYPES } from '../utils/geereed-provider';
 
-export function useGeereedSort(defaultSortKey: string): IUseGeereedSort {
+export function useGeereedSort(defaultSortKey: string = ''): IUseGeereedSort {
   const [sortKey, setSortKey] = React.useState(defaultSortKey);
   const [sortType, setSortType] = React.useState(GEEREED_SORT_TYPES.ASC);
 

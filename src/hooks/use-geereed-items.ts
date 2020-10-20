@@ -1,5 +1,5 @@
 import { IGeereedItem, IUseGeereedItemsOptions } from '../typings';
-import { SORT_TYPES } from './use-geereed-sort';
+import { GEEREED_SORT_TYPES } from '../utils/geereed-provider';
 
 export function useGeereedItems(
   items: IGeereedItem[],
@@ -48,9 +48,9 @@ export function useGeereedItems(
       ) {
         return 0;
       }
-      if (sortType === SORT_TYPES.DES) {
+      if (sortType === GEEREED_SORT_TYPES.DES) {
         return item1[sortKey] > item2[sortKey] ? -1 : 1;
-      } else if (sortType === SORT_TYPES.ASC) {
+      } else if (sortType === GEEREED_SORT_TYPES.ASC) {
         return item1[sortKey] < item2[sortKey] ? -1 : 1;
       }
       return 0;
