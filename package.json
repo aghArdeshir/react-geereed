@@ -10,7 +10,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject",
     "build-hooks": "cross-env NODE_ENV=development parcel build ./src/builder.ts --out-file index.js"
   },
@@ -30,16 +30,17 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.67",
-    "@types/react": "^16.9.51",
-    "@types/react-dom": "^16.9.8",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.8",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.10",
+    "@types/react": "^16.9.53",
     "@types/react-beautiful-dnd": "^13.0.0",
+    "@types/react-dom": "^16.9.8",
     "cross-env": "^7.0.2",
     "husky": "^4.3.0",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
     "parcel": "^1.12.4",
     "prettier": "^2.1.2",
     "pretty-quick": "^3.0.2",

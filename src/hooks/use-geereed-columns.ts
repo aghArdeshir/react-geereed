@@ -30,3 +30,8 @@ export function useGeereedColumns(
     dispatchGroupByStateHolder,
   ];
 }
+
+/**
+ * API Propose: second member in return array is not needed and necessary, remove it
+ * API propose: instead of `dispatchGroupByStateHolder`, expose `toggleGroup, expandGropu & collapseGroup`
+ */
