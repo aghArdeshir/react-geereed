@@ -1,26 +1,23 @@
 import React from 'react';
-import {
-  randomLastName,
-  getRandom,
-  randomRepetitiveName,
-} from './Demo.Service';
+import { mockStudents } from './Demo.Service';
 import ReactGeereed from '../ReactGeereed';
 import { IGeereedRef, IGeereedColumn } from '../typings';
 import { useGeereedFilter } from '../hooks/use-geereed-filter';
 
-type IStudent = any;
+type IMockStudent = typeof mockStudents[0];
+type IPartialMockStudent = Partial<IMockStudent>;
 
-const regenerateMockItems: () => IStudent[] = () =>
-  new Array(10).fill(1).map(() => ({
-    Name: randomRepetitiveName(),
-    LastName: randomLastName(),
-    Age: getRandom(100),
-    AverageMarks: getRandom(20),
-  }));
+// const regenerateMockItems: () => IStudent[] = () =>
+//   new Array(10).fill(1).map(() => ({
+//     Name: randomRepetitiveName(),
+//     LastName: randomLastName(),
+//     Age: getRandom(100),
+//     AverageMarks: getRandom(20),
+//   }));
 
 export default function DemoBasicStudentsList() {
   const [newItemState, dispatchNewItem] = React.useReducer(
-    (state: { [key: string]: any }, action: { [key: string]: any } | null) => {
+    (state: IPartialMockStudent, action: IPartialMockStudent | null) => {
       if (action === null) {
         return {};
       } else {
@@ -63,7 +60,7 @@ export default function DemoBasicStudentsList() {
           editor: () => (
             <input
               onChange={(e) => {
-                dispatchNewItem({ Age: e.target.value });
+                dispatchNewItem({ Age: Number(e.target.value) });
               }}
               value={newItemState.Age || ''}
               type="number"
@@ -94,12 +91,11 @@ export default function DemoBasicStudentsList() {
     ]
   );
 
-  const [items, setItems] = React.useState(regenerateMockItems());
-  const [page, setPage] = React.useState(1);
+  const [items, setItems] = React.useState([] as IMockStudent[]);
+  // const [page, setPage] = React.useState(1);
 
-  const reGenerateMockItems = React.useCallback((page?) => {
-    setItems(regenerateMockItems());
-    if (page) setPage(page);
+  React.useEffect(() => {
+    setItems(mockStudents);
   }, []);
 
   const gridRef = React.useRef<IGeereedRef>(null);
@@ -133,15 +129,15 @@ export default function DemoBasicStudentsList() {
     [items]
   );
 
-  const onDragEnd = React.useCallback(
-    (sourceIndex, destinationIndex) => {
-      const _items = [...items];
-      const removedItem = _items.splice(sourceIndex, 1)[0];
-      _items.splice(destinationIndex, 0, removedItem);
-      setItems(_items);
-    },
-    [items]
-  );
+  // const onDragEnd = React.useCallback(
+  //   (sourceIndex, destinationIndex) => {
+  //     const _items = [...items];
+  //     const removedItem = _items.splice(sourceIndex, 1)[0];
+  //     _items.splice(destinationIndex, 0, removedItem);
+  //     setItems(_items);
+  //   },
+  //   [items]
+  // );
 
   const editActions = React.useCallback(
     (rowItem?: any, rowIndex?: number) => {
@@ -151,7 +147,7 @@ export default function DemoBasicStudentsList() {
             <button
               onClick={() => {
                 const _items = [...items];
-                _items.splice(rowIndex, 1, newItemState);
+                _items.splice(rowIndex, 1, newItemState as IMockStudent);
                 setItems(_items);
                 dispatchNewItem(null);
                 gridRef.current?.cancelEdit();
@@ -170,7 +166,7 @@ export default function DemoBasicStudentsList() {
         <>
           <button
             onClick={() => {
-              setItems((_items) => _items.concat(newItemState));
+              setItems((_items) => _items.concat(newItemState as IMockStudent));
               dispatchNewItem(null);
               gridRef.current?.cancelAdd();
             }}
@@ -192,13 +188,13 @@ export default function DemoBasicStudentsList() {
         columns={columns}
         items={items}
         actions={actions}
-        onDragEnd={onDragEnd}
+        // onDragEnd={onDragEnd}
         ref={gridRef}
         editActions={editActions}
         // groupBy={columns[0].key}
-        pagination={{ page, totalPages: 10, itemsPerPage: 5 }}
-        onPage={reGenerateMockItems}
-        onRefresh={() => reGenerateMockItems()}
+        // pagination={{ page, totalPages: 10, itemsPerPage: 5 }}
+        // onPage={reGenerateMockItems}
+        // onRefresh={() => reGenerateMockItems()}
         columnFilters={columnFilters}
       />
     </>
