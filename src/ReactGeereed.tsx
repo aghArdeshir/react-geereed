@@ -26,6 +26,7 @@ import { useGeereedPagination } from './hooks/use-geereed-pagination';
 
 const noop = () => {};
 const jsxNoop = () => <></>;
+const constantEmptyObject = {};
 
 function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
   const {
@@ -38,7 +39,7 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     // pagination,
     // onPage,
     onRefresh,
-    columnFilters = {},
+    columnFilters = constantEmptyObject,
   } = props;
 
   // if ((pagination && !onPage) || (onPage && !pagination)) {

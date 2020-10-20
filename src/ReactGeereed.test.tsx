@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import ReactGeereed from './ReactGeereed';
 
 test('renders learn react link', () => {
@@ -9,4 +9,6 @@ test('renders learn react link', () => {
       items={[{ name: 'Ali', age: 24 }]}
     />
   );
+
+  expect(screen.getByText('Ali')).toBeVisible();
 });
