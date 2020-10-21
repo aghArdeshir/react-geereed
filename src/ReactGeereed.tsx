@@ -14,7 +14,7 @@ import {
   IGeereedRef,
   IGeereedRenderRowOptions,
 } from './typings';
-import { useGeereedSort, SORT_TYPES } from './hooks/use-geereed-sort';
+import { useGeereedSort } from './hooks/use-geereed-sort';
 import { useGeereedItems } from './hooks/use-geereed-items';
 import { useGeereedSearch } from './hooks/use-geereed-search';
 import { useGeereedSelect } from './hooks/use-geereed-select';
@@ -22,6 +22,7 @@ import { useGeereedDnd } from './hooks/use-geereed-dnd';
 import { useGeereedEditor } from './hooks/use-geereed-editor';
 import { useGeereedColumns } from './hooks/use-geereed-columns';
 import Pagination from './components/Pagination';
+import { GEEREED_SORT_TYPES } from './utils/geereed-provider';
 
 const noop = () => {};
 const jsxNoop = () => <></>;
@@ -192,12 +193,14 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                   <span onClick={() => onSortCallback(column.key)}>
                     {column.title || column.key}
                     <span style={{ marginLeft: 10, minWidth: 25 }}>
-                      {sortKey === column.key && sortType === SORT_TYPES.ASC ? (
+                      {sortKey === column.key &&
+                      sortType === GEEREED_SORT_TYPES.ASC ? (
                         <>&#9196;</>
                       ) : (
                         <></>
                       )}
-                      {sortKey === column.key && sortType === SORT_TYPES.DES ? (
+                      {sortKey === column.key &&
+                      sortType === GEEREED_SORT_TYPES.DES ? (
                         <>&#9195;</>
                       ) : (
                         <></>

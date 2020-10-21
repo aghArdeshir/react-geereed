@@ -6,6 +6,8 @@ export function useGeereedDnd(
   columnFilters: IGeereedFilterState,
   editingIndex: number | null
 ) {
+  if (process.env.NODE_ENV === 'test') return true;
+
   const disableDnd =
     !!sortKey ||
     !!searchTerm ||
