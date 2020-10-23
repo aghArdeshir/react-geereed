@@ -29,8 +29,8 @@ export default function DemoBasicStudentsList() {
     },
     {}
   );
-
   const [columnFilters, dispatchColumnFilters] = useGeereedFilter();
+  const [exactMatch, setExactMatch]: any = React.useState({});
 
   const columns = React.useMemo(
     () =>
@@ -46,15 +46,32 @@ export default function DemoBasicStudentsList() {
             />
           ), // title will be set equal to key if not provided
           filterComponent: () => (
-            <input
-              value={columnFilters.Name || ''}
-              onChange={(e) =>
-                dispatchColumnFilters({
-                  columnKey: 'Name',
-                  value: e.target.value,
-                })
-              }
-            />
+            <>
+              <input
+                value={columnFilters.Name?.value || ''}
+                onChange={(e) =>
+                  dispatchColumnFilters({
+                    columnKey: 'Name',
+                    value: e.target.value,
+                    exact: exactMatch['Name'] || false,
+                  })
+                }
+              />
+              <input
+                type="checkbox"
+                value={'true'}
+                checked={exactMatch['Name']}
+                onChange={(e) => {
+                  e.persist();
+                  setExactMatch((current: any) => {
+                    return {
+                      ...current,
+                      Name: e.target?.checked,
+                    };
+                  });
+                }}
+              />
+            </>
           ),
         },
         { key: 'LastName', title: 'Last Name' },
@@ -70,17 +87,34 @@ export default function DemoBasicStudentsList() {
             />
           ),
           filterComponent: () => (
-            <input
-              type="number"
-              min={0}
-              value={columnFilters.Age || ''}
-              onChange={(e) =>
-                dispatchColumnFilters({
-                  columnKey: 'Age',
-                  value: e.target.value,
-                })
-              }
-            />
+            <>
+              <input
+                type="number"
+                min={0}
+                value={columnFilters.Age?.value || ''}
+                onChange={(e) =>
+                  dispatchColumnFilters({
+                    columnKey: 'Age',
+                    value: e.target.value,
+                    exact: exactMatch['Age'] || false,
+                  })
+                }
+              />
+              <input
+                type="checkbox"
+                value={'true'}
+                checked={exactMatch['Age']}
+                onChange={(e) => {
+                  e.persist();
+                  setExactMatch((current: any) => {
+                    return {
+                      ...current,
+                      Age: e.target?.checked,
+                    };
+                  });
+                }}
+              />
+            </>
           ),
         },
         { key: 'AverageMarks', title: 'Average Marks' },
@@ -91,6 +125,7 @@ export default function DemoBasicStudentsList() {
       dispatchColumnFilters,
       newItemState.Age,
       newItemState.Name,
+      exactMatch,
     ]
   );
 
