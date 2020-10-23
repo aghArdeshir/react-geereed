@@ -23,13 +23,17 @@ export function useGeereedItems(
     const columnFilterValue = (columnFilters || {})[columnKey];
     if (columnFilterValue) {
       result = result.filter((item) => {
-        return (
-          item[columnKey] === columnFilterValue ||
-          item[columnKey]
-            .toString()
-            .toLowerCase()
-            .indexOf(columnFilterValue.toString().toLowerCase()) > -1
-        );
+        if (columnFilterValue.value === undefined) return true;
+        if (item[columnKey] === columnFilterValue.value) return true;
+        else if (!columnFilterValue.exact) {
+          return (
+            item[columnKey]
+              .toString()
+              .toLowerCase()
+              .indexOf(columnFilterValue.value.toString().toLowerCase()) > -1
+          );
+        }
+        return false;
       });
     }
   });

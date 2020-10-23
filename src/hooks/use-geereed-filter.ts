@@ -6,7 +6,23 @@ export function useGeereedFilter() {
     state: IGeereedFilterState,
     action: IGeereedFilterAction
   ) => {
-    return { ...state, [action.columnKey]: action.value };
+    const stateValue = (state[action.columnKey] || {}).value;
+    if (action.value !== (stateValue === undefined ? '' : stateValue)) {
+      if (action.value !== '') {
+        return {
+          ...state,
+          [action.columnKey]: {
+            value: action.value,
+            exact: action.exact,
+          },
+        };
+      } else {
+        const result = { ...state };
+        delete result[action.columnKey];
+        return result;
+      }
+    }
+    return state;
   };
   return useReducer(reducer, {});
 }

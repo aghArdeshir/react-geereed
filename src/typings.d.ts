@@ -49,12 +49,13 @@ export interface IGeereedHeaderCell {
 }
 
 export interface IGeereedFilterState {
-  [coluumnKey: string]: string;
+  [coluumnKey: string]: { value: string; exact: boolean };
 }
 
 export interface IGeereedFilterAction {
   columnKey: string;
   value: string;
+  exact: boolean;
 }
 
 export type IUseGeereedSelect = [any[], (rowItem: any) => void];
