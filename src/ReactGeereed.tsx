@@ -22,10 +22,12 @@ import { useGeereedDnd } from './hooks/use-geereed-dnd';
 import { useGeereedEditor } from './hooks/use-geereed-editor';
 import { useGeereedColumns } from './hooks/use-geereed-columns';
 import Pagination from './components/Pagination';
+import { useGeereedPagination } from './hooks/use-geereed-pagination';
 import { GEEREED_SORT_TYPES } from './utils/geereed-provider';
 
 const noop = () => {};
 const jsxNoop = () => <></>;
+const constantEmptyObject = {};
 
 function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
   const {
@@ -35,28 +37,33 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
     onDragEnd = noop,
     editActions = jsxNoop,
     groupBy,
-    pagination,
-    onPage,
+    // pagination,
+    // onPage,
     onRefresh,
-    columnFilters = {},
+    columnFilters = constantEmptyObject,
   } = props;
 
-  if ((pagination && !onPage) || (onPage && !pagination)) {
-    throw new Error(
-      'ReactGeereed: Please provide both `pagination` and `onPage` props'
-    );
-  }
+  // if ((pagination && !onPage) || (onPage && !pagination)) {
+  //   throw new Error(
+  //     'ReactGeereed: Please provide both `pagination` and `onPage` props'
+  //   );
+  // }
+
+  const defaultRowsPerPage = 10;
+  const [page, onPage] = useGeereedPagination(true, defaultRowsPerPage);
+  const pagination = true;
+
+  React.useEffect(() => {
+    onPage({ num: 1, rows: page.rows });
+  }, [columnFilters, onPage, page.rows]);
 
   const [sortKey, sortType, onSortCallback] = useGeereedSort();
   const [searchTerm, setSearchTerm] = useGeereedSearch();
   const [selectedRows, selectRow] = useGeereedSelect();
   const [editingIndex, setEditingIndex] = useGeereedEditor();
-  const disableDnd = useGeereedDnd(
-    sortKey,
-    searchTerm,
-    columnFilters,
-    editingIndex
-  );
+  const disableDnd =
+    useGeereedDnd(sortKey, searchTerm, columnFilters, editingIndex) ||
+    !!onDragEnd;
   const _items = useGeereedItems(items, {
     sortKey,
     sortType,
@@ -270,9 +277,14 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                     ))
                 ) : (
                   <>
-                    {_items.map((item: IGeereedItem, index: number) =>
-                      renderRow(item, index)
-                    )}
+                    {_items
+                      .slice(
+                        page.num * page.rows - page.rows,
+                        page.num * page.rows
+                      )
+                      .map((item: IGeereedItem, index: number) =>
+                        renderRow(item, index)
+                      )}
                   </>
                 )}
                 {editingIndex === -1 ? (
@@ -307,7 +319,16 @@ function ReactGeereed(props: IReactGeereedProps, ref: Ref<any>) {
                 ) : (
                   <></>
                 )}
-                <Pagination pagination={pagination} onPage={onPage!} />
+                <Pagination
+                  pagination={{
+                    page: page.num,
+                    itemsPerPage: page.rows,
+                    totalPages: Math.ceil(_items.length / page.rows),
+                  }}
+                  onPage={(pageNumber) =>
+                    onPage({ num: pageNumber, rows: page.rows })
+                  }
+                />
               </td>
             </tr>
           </tfoot>

@@ -214,3 +214,10 @@ export function randomLastName() {
 export function getRandom(max: number): number {
   return Math.floor(Math.random() * max);
 }
+
+export const mockStudents = mockNames.map((Name, index) => ({
+  Name,
+  LastName: mockLastNames[index],
+  Age: getRandom(100),
+  AverageMarks: getRandom(20),
+}));
